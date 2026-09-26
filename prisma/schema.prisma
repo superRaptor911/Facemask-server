@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                String   @id @default(uuid())
+  provider          String
+  providerSubjectId String
+  email             String?
+  name              String?
+  pictureUrl        String?
+  creditBalance     Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  sessions           Session[]
+  purchases          Purchase[]
+  creditTransactions CreditTransaction[]
+
+  @@unique([provider, providerSubjectId])
+}
+
+model Session {
+  id         String   @id @default(uuid())
+  tokenHash  String   @unique
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  lastUsedAt DateTime @default(now())
+  expiresAt  DateTime
+
+  @@index([userId])
+}
+
+// SKU config: maps Play Console product IDs to credit amounts.
+model CreditProduct {
+  productId String  @id
+  credits   Int
+  active    Boolean @default(true)
+}
+
+enum PurchaseStatus {
+  GRANTED
+  VOIDED
+}
+
+// One row per Play purchase token — the idempotency anchor for grants.
+// userId is nullable so financial records survive account deletion.
+model Purchase {
+  id            String         @id @default(uuid())
+  userId        String?
+  user          User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  productId     String
+  purchaseToken String         @unique
+  orderId       String?
+  credits       Int
+  status        PurchaseStatus @default(GRANTED)
+  voidedAt      DateTime?
+  createdAt     DateTime       @default(now())
+
+  transactions CreditTransaction[]
+
+  @@index([userId])
+}
+
+enum CreditTransactionType {
+  PURCHASE
+  SPEND
+  ADJUSTMENT
+}
+
+// Append-only ledger; User.creditBalance is the cached sum.
+model CreditTransaction {
+  id             String                @id @default(uuid())
+  userId         String?
+  user           User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+  amount         Int
+  type           CreditTransactionType
+  idempotencyKey String?               @unique
+  purchaseId     String?
+  purchase       Purchase?             @relation(fields: [purchaseId], references: [id])
+  note           String?
+  createdAt      DateTime              @default(now())
+
+  @@index([userId, createdAt])
+}
