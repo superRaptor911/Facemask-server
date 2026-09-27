@@ -8,3 +8,12 @@ coverage/
 .DS_Store
 
 /src/generated/prisma
+
+# benchmark
+bench/.venv/
+bench/runs/
+bench/models/*
+bench/selfies/*
+bench/templates/*
+!bench/templates/templates.toml
+**/__pycache__/

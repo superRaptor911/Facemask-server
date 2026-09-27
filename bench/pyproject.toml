@@ -1,0 +1,21 @@
+[project]
+name = "facemask-bench"
+version = "0.1.0"
+description = "Face-sticker benchmark: GPT-Image-2.5 Flare vs classic face swap"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "openai>=2.0",
+  "insightface>=0.7.3",
+  "onnxruntime>=1.19",
+  "opencv-python-headless>=4.10",
+  "numpy>=1.26",
+  "pillow>=10.4",
+  "rembg>=2.0.60",
+]
+
+[tool.uv]
+package = false
+
+# insightface's setup.py imports numpy/cython at build time.
+[tool.uv.extra-build-dependencies]
+insightface = ["numpy", "cython"]

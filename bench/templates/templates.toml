@@ -1,0 +1,45 @@
+# Sticker templates for the benchmark.
+#
+#   id     unique slug
+#   image  file in this directory (a photo/art with ONE clear face).
+#          Omit it for a prompt-only template — classic methods can't run
+#          those and are reported as "unsupported" (that gap is the point).
+#   style  "photo" or "cartoon" (used for the per-style breakdown and the
+#          default style instruction sent to Flare)
+#   scene  what the sticker shows; sent to Flare
+#
+# Only use template images you have the rights to.
+
+[[template]]
+id = "thumbs_up"
+image = "thumbs_up.jpg"
+style = "photo"
+scene = "giving an enthusiastic thumbs up with a big grin"
+
+[[template]]
+id = "facepalm"
+image = "facepalm.jpg"
+style = "photo"
+scene = "dramatic facepalm, exasperated"
+
+[[template]]
+id = "cartoon_party"
+style = "cartoon"
+scene = "wearing a party hat, throwing confetti, laughing"
+
+[[template]]
+id = "cartoon_sleepy"
+style = "cartoon"
+scene = "sleepy, yawning, holding a coffee mug"
+
+[[template]]
+id = "shocked"
+image = "shocked.jpg"
+style = "photo"
+scene = "shocked face, mouth wide open, hands on cheeks"
+
+[[template]]
+id = "heart_hands"
+image = "heart_hands.jpg"
+style = "photo"
+scene = "making a heart shape with their hands, smiling warmly"
